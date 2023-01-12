@@ -70,10 +70,11 @@ func NewClientOrDie(npdo *options.NodeProblemDetectorOptions) Client {
 	// we have checked it is a valid URI after command line argument is parsed.:)
 	uri, _ := url.Parse(npdo.ApiServerOverride)
 
-	cfgOverrides := &clientcmd.ConfigOverrides{
-		ClusterInfo: api.Cluster{
+	cfgOverrides := &clientcmd.ConfigOverrides{}
+	if uri.String() != "" {
+		cfgOverrides.ClusterInfo = api.Cluster{
 			Server: fmt.Sprintf("%s://%s", uri.Scheme, uri.Host),
-		},
+		}
 	}
 
 	apiConfig, err := clientcmd.NewDefaultClientConfigLoadingRules().Load()
